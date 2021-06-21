@@ -41,7 +41,7 @@ const main = async () => {
         maxAge: 1000 * 60 * 60 * 4, // 4h
         httpOnly: true,
         sameSite: 'lax', // csrf
-        // secure: __prod__, // tylko https na produkcji, debug
+        secure: __prod__, // tylko https na produkcji
       },
       saveUninitialized: false,
       secret: 'ghfdszzfxcghvjbknlm', // poźniej dam to do ENV
