@@ -66,7 +66,7 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: 'username',
+            field: 'password',
             message: 'Password lenght must be grater than 3!',
           },
         ],
