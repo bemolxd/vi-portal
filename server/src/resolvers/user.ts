@@ -74,6 +74,10 @@ export class UserResolver {
       };
     }
     const hashedPass = await argon2.hash(options.password);
+    // const user = em.create(User, {
+    //   username: options.username,
+    //   password: hashedPass,
+    // });
     let user;
     try {
       const result = await (em as EntityManager)
@@ -86,6 +90,7 @@ export class UserResolver {
           updated_at: new Date(),
         })
         .returning('*');
+      // await em.persistAndFlush(user);
       user = result[0];
     } catch (error) {
       if (error.code === '23505') {
