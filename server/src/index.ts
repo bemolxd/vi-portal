@@ -48,7 +48,10 @@ const main = async () => {
     }),
     context: ({ req, res }): MyContext => ({ em: orm.em, req, res }),
   });
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: { origin: 'http://localhost:3000' },
+  }); //origin: dev
 
   app.listen(4000, () => {
     console.log('viPortal server running on localhost:4000');
