@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }: any) {
       <ChakraProvider resetCSS theme={theme}>
         <ColorModeProvider
           options={{
-            useSystemColorMode: true,
+            initialColorMode: 'dark', // appka cała w dark mode
           }}
         >
           <Component {...pageProps} />

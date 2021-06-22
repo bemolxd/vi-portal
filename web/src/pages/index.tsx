@@ -1,9 +1,12 @@
 import { Navbar } from '../components/Navbar';
+import { Wrapper } from '../components/Wrapper';
 
 const Index = () => (
   <>
     <Navbar />
-    <div>hello viPortal</div>
+    <Wrapper>
+      <div>hello viPortal</div>
+    </Wrapper>
   </>
 );
 
