@@ -7,24 +7,29 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
-  Image,
 } from '@chakra-ui/react';
+import Image from 'next/image';
 import React from 'react';
-import { useMeQuery } from '../generated/graphql';
+import { useLogoutMutation, useMeQuery } from '../generated/graphql';
 import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import NextLink from 'next/link';
-import LogoImg from '../images/worldwide.png';
+import { useRouter } from 'next/router';
+import Logo from '../images/worldwide.png';
+import { isServer } from '../utils/isServer';
 
 interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
-  const [{ data, fetching }] = useMeQuery();
+  const router = useRouter();
+  const [{ data, fetching }] = useMeQuery({ pause: isServer() });
+  const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
 
   let menuIcon = null;
   let menuItems = null;
   let displayUser = null;
 
   if (fetching) {
+    // fetching
   } else if (!data?.me) {
     menuIcon = <AiOutlineLock />;
     menuItems = (
@@ -43,7 +48,15 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     menuItems = (
       <>
         <MenuItem>Settings</MenuItem>
-        <MenuItem>Logout</MenuItem>
+        <MenuItem
+          isDisabled={logoutFetching}
+          onClick={() => {
+            logout();
+            router.reload();
+          }}
+        >
+          Logout
+        </MenuItem>
       </>
     );
   }
@@ -56,17 +69,21 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
       h='64px'
       boxShadow='md'
       px={8}
+      borderBottom='1px'
+      borderBottomColor='gray.700'
     >
       <HStack>
         <Image
-          h='30px'
-          src='https://image.flaticon.com/icons/png/512/785/785824.png'
+          src='/images/worldwide.png'
+          alt='Logo'
+          width='40px'
+          height='40px'
         />
         <Box ml={4}>viPortal</Box>
       </HStack>
       <Box>
         <HStack>
-          <Box>Witaj, {displayUser}!</Box>
+          {displayUser && <Box>Welcome, {displayUser}!</Box>}
           <Menu>
             <MenuButton as={IconButton} icon={menuIcon} borderRadius='full' />
             <MenuList>

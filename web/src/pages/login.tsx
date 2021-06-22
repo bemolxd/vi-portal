@@ -1,57 +1,99 @@
 import React from 'react';
 import { Form, Formik } from 'formik';
-import { Box, Button } from '@chakra-ui/react';
+import { Box, Button, Text, Link } from '@chakra-ui/react';
+import Image from 'next/image';
 import { Wrapper } from '../components/Wrapper';
 import { InputField } from '../components/InputField';
 import { useLoginMutation } from '../generated/graphql';
 import { toErrorMap } from '../utils/toErrorMap';
 import { useRouter } from 'next/router';
+import NextLink from 'next/link';
+import { withUrqlClient } from 'next-urql';
+import { createUrqlClient } from '../utils/createUrqlClient';
 
 const Login: React.FC<{}> = ({}) => {
   const [, login] = useLoginMutation();
   const router = useRouter();
   return (
     <Wrapper variant='small'>
-      <Formik
-        initialValues={{ username: '', password: '' }}
-        onSubmit={async (values, { setErrors }) => {
-          console.log(values);
-          const response = await login({ options: values });
-          if (response.data?.login.errors) {
-            setErrors(toErrorMap(response.data.login.errors));
-          } else if (response.data?.login.user) {
-            router.push('/');
-          }
-        }}
+      <Box
+        d='flex'
+        justifyContent='center'
+        alignItems='center'
+        flexDir='column'
+        mt={16}
+        mb={8}
       >
-        {({ isSubmitting }) => (
-          <Form>
-            <InputField
-              name='username'
-              placeholder='Username'
-              label='Username'
-            />
-            <Box mt={4}>
+        <Image
+          src='/images/worldwide.png'
+          alt='Logo'
+          width='180px'
+          height='180px'
+        />
+        <Text fontSize='3xl'>viPortal</Text>
+      </Box>
+      <Box
+        bg='gray.700'
+        border='1px'
+        borderColor='gray.700'
+        p={4}
+        borderRadius={20}
+        m={2}
+      >
+        <Formik
+          initialValues={{ username: '', password: '' }}
+          onSubmit={async (values, { setErrors }) => {
+            const response = await login({ options: values });
+            if (response.data?.login.errors) {
+              setErrors(toErrorMap(response.data.login.errors));
+            } else if (response.data?.login.user) {
+              router.push('/');
+            }
+          }}
+        >
+          {({ isSubmitting }) => (
+            <Form>
               <InputField
-                name='password'
-                placeholder='Password'
-                label='Password'
-                type='password'
+                name='username'
+                placeholder='Username'
+                label='Username'
               />
-            </Box>
-            <Button
-              isLoading={isSubmitting}
-              mt={8}
-              type='submit'
-              colorScheme='teal'
-            >
-              Login
-            </Button>
-          </Form>
-        )}
-      </Formik>
+              <Box mt={4}>
+                <InputField
+                  name='password'
+                  placeholder='Password'
+                  label='Password'
+                  type='password'
+                />
+              </Box>
+              <Box
+                d='flex'
+                justifyContent='center'
+                alignItems='center'
+                flexDir='column'
+              >
+                <Button
+                  isLoading={isSubmitting}
+                  mt={8}
+                  type='submit'
+                  colorScheme='teal'
+                >
+                  Login
+                </Button>
+                <Text mt={8} fontSize='smaller'>
+                  Don't have account? Go{' '}
+                  <Link as={NextLink} href='/register'>
+                    here
+                  </Link>
+                  .
+                </Text>
+              </Box>
+            </Form>
+          )}
+        </Formik>
+      </Box>
     </Wrapper>
   );
 };
 
-export default Login;
+export default withUrqlClient(createUrqlClient)(Login);
