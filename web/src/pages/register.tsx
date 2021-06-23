@@ -85,9 +85,9 @@ const Register: React.FC<{}> = ({}) => {
                 </Button>
                 <Text mt={8} fontSize='smaller'>
                   Already have account? Go{' '}
-                  <Link as={NextLink} href='/login'>
-                    here
-                  </Link>
+                  <NextLink href='/login'>
+                    <Link>here</Link>
+                  </NextLink>
                   .
                 </Text>
               </Box>

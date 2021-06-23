@@ -82,11 +82,16 @@ const Login: React.FC<{}> = ({}) => {
                 </Button>
                 <Text mt={8} fontSize='smaller'>
                   Don't have account? Go{' '}
-                  <Link as={NextLink} href='/register'>
-                    here
-                  </Link>
+                  <NextLink href='/register'>
+                    <Link>here</Link>
+                  </NextLink>
                   .
                 </Text>
+                <NextLink href='/forgot-password'>
+                  <Link fontSize='smaller' mt={4}>
+                    Forgot password
+                  </Link>
+                </NextLink>
               </Box>
             </Form>
           )}
