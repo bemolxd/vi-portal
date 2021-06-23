@@ -14,7 +14,6 @@ import { useLogoutMutation, useMeQuery } from '../generated/graphql';
 import { AiOutlineLock, AiOutlineUser } from 'react-icons/ai';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import Logo from '../images/worldwide.png';
 import { isServer } from '../utils/isServer';
 
 interface NavbarProps {}
