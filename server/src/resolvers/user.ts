@@ -215,4 +215,28 @@ export class UserResolver {
 
     return { user };
   }
+
+  @Mutation(() => Boolean)
+  async deleteUser(
+    @Arg('id') id: number,
+    @Ctx() { em, res, req }: MyContext
+  ): Promise<boolean> {
+    try {
+      res.clearCookie(COOKIE_NAME);
+      new Promise((resolve) => {
+        req.session.destroy((err) => {
+          if (err) {
+            console.log(err);
+            resolve(false);
+            return;
+          }
+          resolve(true);
+        });
+      });
+      em.nativeDelete(User, { id });
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }
