@@ -11,7 +11,7 @@ import {
 } from 'type-graphql';
 import argon2 from 'argon2';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { COOKIE_NAME, FORGET_PASS_PREFIX } from '../constants';
+import { COOKIE_NAME, EMAIL_REGEX, FORGET_PASS_PREFIX } from '../constants';
 import { UsernamePasswordInput } from './UsernamePasswordInput';
 import { validateRegister } from '../utils/validateRegister';
 import { sendEmail } from '../utils/sendEmail';
@@ -163,6 +163,43 @@ export class UserResolver {
       `<a href="http://localhost:3000/change-password/${token}">Click here to reset password.</a>`
     );
     return true;
+  }
+
+  @Mutation(() => UserResponse)
+  async updateUser(
+    @Arg('id') id: number,
+    @Arg('newEmail') newEmail: string,
+    @Arg('newProfilePic') newProfilePic: string,
+    @Ctx() { em }: MyContext
+  ): Promise<UserResponse> {
+    if (!EMAIL_REGEX.test(String(newEmail).toLocaleLowerCase())) {
+      return {
+        errors: [
+          {
+            field: 'newEmail',
+            message: 'Invalid email!',
+          },
+        ],
+      };
+    }
+    const user = await em.findOne(User, { id });
+    if (!user) {
+      console.log('No user found!');
+      return {
+        errors: [
+          {
+            field: 'user',
+            message: 'No user found!',
+          },
+        ],
+      };
+    }
+
+    user.email = newEmail;
+    user.profilePicture = newProfilePic;
+    await em.persistAndFlush(user);
+
+    return { user };
   }
 
   @Mutation(() => UserResponse)
